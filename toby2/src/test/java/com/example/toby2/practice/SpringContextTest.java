@@ -8,11 +8,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.ReflectionUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
+import org.springframework.beans.factory.support.PropertiesBeanDefinitionReader;
 import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -87,5 +93,56 @@ public class SpringContextTest {
         Assertions.assertNotNull(mazingerZ);
         Assertions.assertNotEquals(taekwonV, mazingerZ);
         Assertions.assertEquals("MAZINGER Z fires a missile!", mazingerZ.attack());
+    }
+
+    @Test
+    public void 일반적인_컨텍스트_테스트1() {
+        GenericApplicationContext gac = new GenericApplicationContext();
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(gac);
+
+        reader.loadBeanDefinitions("test-context.xml");
+        gac.refresh();
+
+        Robot taekwonV = gac.getBean("taekwonV", Robot.class);
+
+        assertNotNull(taekwonV);
+    }
+
+    @Test
+    public void 일반적인_컨텍스트_테스트2() {
+        GenericApplicationContext gac = new GenericApplicationContext();
+        PropertiesBeanDefinitionReader reader = new PropertiesBeanDefinitionReader(gac);
+
+        reader.loadBeanDefinitions("test-context.properties");
+        gac.refresh();
+
+        Robot taekwonV = gac.getBean("taekwonV", Robot.class);
+
+        assertNotNull(taekwonV);
+    }
+
+    @Test
+    public void 컨텍스트_계층구조_테스트() {
+        StaticApplicationContext ac1 = new StaticApplicationContext();
+        StaticApplicationContext ac2 = new StaticApplicationContext();
+        StaticApplicationContext ac3 = new StaticApplicationContext();
+
+        ac1.registerSingleton("robot1", Robot.class);
+        ac2.registerSingleton("robot2", Robot.class);
+        ac3.registerSingleton("robot3", Robot.class);
+
+        /** 계층구조
+         *     1
+         *    /\
+         *   2  3
+         */
+        ac2.setParent(ac1);
+        ac3.setParent(ac1);
+
+        Robot robot1 = ac2.getBean("robot1", Robot.class);
+        Robot robot2 = ac3.getBean("robot1", Robot.class);
+
+        assertEquals(robot1, robot2);
+        assertThrows(BeansException.class, ()->ac2.getBean("robot3"));
     }
 }

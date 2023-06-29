@@ -23,6 +23,7 @@ repositories {
 
 dependencies {
     implementation "org.springframework:spring-context:6.0.10"
+    implementation "org.springframework:spring-web:6.0.10"
 //    implementation 'org.springframework.boot:spring-boot-starter-web'
 //    compileOnly 'org.projectlombok:lombok'
 //    annotationProcessor 'org.projectlombok:lombok'
