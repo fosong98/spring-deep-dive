@@ -2,6 +2,8 @@ package com.example.toby2boot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 @SpringBootApplication
 public class Toby2BootApplication {
