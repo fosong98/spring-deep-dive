@@ -1,6 +1,8 @@
 package com.example.toby2.practice;
 
 import com.example.toby2.pojo.Hello;
+import com.example.toby2.pojo.Missile;
+import com.example.toby2.pojo.Robot;
 import com.example.toby2.pojo.StringPrinter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +43,10 @@ public class SpringContextTest {
         assertNotNull(hello2);
         assertNotEquals(hello1, hello2);
 
+        BeanDefinition mazingerZDef = new RootBeanDefinition(Robot.class);
+        mazingerZDef.getPropertyValues().add("name", "MAZINGER Z");
+        ac.registerBeanDefinition("mazingerZ", mazingerZDef);
+
         assertEquals(2, ac.getBeanDefinitionCount());
     }
 
@@ -57,5 +63,29 @@ public class SpringContextTest {
         hello.print();
 
         assertEquals("Hello Spring", ac.getBean("printer").toString());
+    }
+
+    @Test
+    public void 로봇테스트() {
+        StaticApplicationContext context = new StaticApplicationContext();
+        context.registerSingleton("TaekwonV", Robot.class);
+
+        Robot taekwonV = context.getBean("TaekwonV", Robot.class);
+        Assertions.assertNotNull(taekwonV);
+
+        context.registerSingleton("missile", Missile.class);
+
+        BeanDefinition mazingerZDef = new RootBeanDefinition(Robot.class);
+        mazingerZDef.getPropertyValues().add("name", "MAZINGER Z");
+        mazingerZDef.getPropertyValues().add("weapon",
+                new RuntimeBeanReference("missile"));
+
+        context.registerBeanDefinition("mazingerZ", mazingerZDef);
+
+        Robot mazingerZ = context.getBean("mazingerZ", Robot.class);
+
+        Assertions.assertNotNull(mazingerZ);
+        Assertions.assertNotEquals(taekwonV, mazingerZ);
+        Assertions.assertEquals("MAZINGER Z fires a missile!", mazingerZ.attack());
     }
 }
