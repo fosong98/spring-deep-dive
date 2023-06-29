@@ -1,8 +1,5 @@
 package com.example.toby2.pojo;
 
-import lombok.Setter;
-
-@Setter
 public class Hello {
     String name;
     Printer printer;
@@ -13,5 +10,13 @@ public class Hello {
 
     public void print() {
         this.printer.print(sayHello());
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrinter(Printer printer) {
+        this.printer = printer;
     }
 }

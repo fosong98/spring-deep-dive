@@ -47,7 +47,6 @@ public class SpringContextTest {
     @Test
     public void DI_테스트_BeanReference_이용() {
         ac.registerBeanDefinition("printer", new RootBeanDefinition(StringPrinter.class));
-
         BeanDefinition helloDef = new RootBeanDefinition(Hello.class);
         helloDef.getPropertyValues().add("name", "Spring");
         helloDef.getPropertyValues().add("printer", new RuntimeBeanReference("printer"));
